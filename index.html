@@ -65,13 +65,12 @@ label{font-size:12px;font-weight:600;color:var(--mut);display:block;margin:0 0 6
 </div></header>
 <main>
  <div class="card"><div class="in1">
-  <div style="flex:1 1 140px"><label for="kd">Kode akses</label><input id="kd" type="password" placeholder="Dari admin" autocomplete="off"></div>
-  <div style="flex:1 1 140px"><label for="wk">Nama wali kelas</label><input id="wk" placeholder="Isi nama Anda" autocomplete="name"></div>
-  <div style="flex:1 1 140px"><label for="q">Cari siswa</label><input id="q" placeholder="Ketik nama"></div>
-  <button class="save" id="go" style="width:auto;margin:0;align-self:flex-end;padding:11px 18px">Masuk</button>
+  <div style="flex:1 1 180px"><label for="wk">Nama wali kelas (wajib diisi sebelum menyimpan)</label><input id="wk" placeholder="Isi nama Anda" autocomplete="name"></div>
+  <div style="flex:1 1 180px"><label for="q">Cari siswa</label><input id="q" placeholder="Ketik nama"></div>
  </div></div>
  <div class="tabs" id="tabs"></div>
- <div id="list"><div class="msg">Memuat data</div></div>
+ <div id="list"><div class="msg">Memuat data siswa...</div></div>
+ <p style="text-align:center;margin-top:28px"><a href="#" id="adm" style="color:var(--mut);font-size:12px">Mode admin</a></p>
 </main>
 <div class="toast" id="toast"></div>
 <script>
@@ -83,7 +82,7 @@ var COL=["","var(--f1)","var(--f2)","var(--f3)","var(--f4)"];
 var $=function(i){return document.getElementById(i)};
 var data=[],drafts={},editing={},errs={},tab="belum",who="",code="",admin=false,last="";
 try{who=localStorage.getItem("pip_wali")||"";code=localStorage.getItem("pip_kode")||""}catch(e){}
-$("wk").value=who;$("kd").value=code;
+$("wk").value=who;
 function norm(s){return String(s||"").trim().toLowerCase().replace(/\s+/g," ")}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function prio(f){return f==="Miskin"||f==="Miskin Ekstrem"}
@@ -99,7 +98,7 @@ function head(){
   var n=data.length,v=data.filter(function(d){return d.valid}).length,lay=data.filter(function(d){return d.valid&&prio(d.fin)}).length;
   $("pct").textContent=(n?Math.round(v/n*100):0)+"%";$("arc").style.strokeDashoffset=276.5*(1-(n?v/n:0));
   $("pt").textContent=n?v+" dari "+n+" siswa sudah divalidasi":"Belum ada data";
-  $("ps").textContent=n?lay+" siswa layak PIP, "+(n-v)+" masih menunggu validasi":"Masukkan kode akses lalu klik Masuk";
+  $("ps").textContent=n?lay+" siswa layak PIP, "+(n-v)+" masih menunggu validasi":"Memuat data siswa";
   $("tabs").innerHTML=[["belum","Perlu divalidasi ("+(n-v)+")"],["sudah","Tervalidasi ("+v+")"]].map(function(t){return '<button class="'+(tab===t[0]?"sel":"")+'" data-t="'+t[0]+'">'+t[1]+'</button>'}).join("");
 }
 function edit(d){
@@ -122,7 +121,7 @@ function ro(d){
 function list(){
   var q=$("q").value.toLowerCase();
   var rows=data.filter(function(d){return ((tab==="sudah")===d.valid)&&(!q||d.nama.toLowerCase().indexOf(q)>-1)});
-  if(!data.length){$("list").innerHTML='<div class="msg">Masukkan kode akses lalu klik Masuk.</div>';return}
+  if(!data.length){$("list").innerHTML='<div class="msg">Memuat data siswa...</div>';return}
   if(!rows.length){$("list").innerHTML='<div class="msg">'+(tab==="belum"&&!q?"Semua siswa sudah divalidasi.":"Tidak ada siswa di sini.")+'</div>';return}
   $("list").innerHTML=rows.map(function(d){return (tab==="sudah"&&!editing[d.id])?ro(d):edit(d)}).join("");
 }
@@ -131,17 +130,16 @@ function byId(id){return data.filter(function(d){return d.id===id})[0]}
 function get(){return fetch(API+"?key="+encodeURIComponent(code)).then(function(r){return r.json()})}
 function post(b){b.key=code;return fetch(API,{method:"POST",body:JSON.stringify(b)}).then(function(r){return r.json()})}
 function load(){
-  if(!code){setSt(false,"Belum masuk");render();return}
   if(API.indexOf("PASTE_")===0){setSt(false,"Alamat sistem belum diisi di index.html");return}
   get().then(function(j){
     if(!j.ok){setSt(false,j.error==="kode"?"Kode akses salah":"Gagal memuat");if(j.error==="kode"){data=[];last="";render()}return}
     admin=!!j.admin;setSt(true,admin?"Tersambung, mode admin":"Tersambung");
+    if(code&&!admin){toast("Kode admin salah");code="";try{localStorage.removeItem("pip_kode")}catch(e){}}
     var s=JSON.stringify(j.rows);if(s===last)return;last=s;data=j.rows;render()
   }).catch(function(){setSt(false,"Tidak bisa terhubung, coba lagi")});
 }
-$("go").onclick=function(){code=$("kd").value.trim();who=$("wk").value.trim();try{localStorage.setItem("pip_kode",code);localStorage.setItem("pip_wali",who)}catch(e){}last="";load()};
 $("wk").onchange=function(){who=$("wk").value.trim();try{localStorage.setItem("pip_wali",who)}catch(e){}list()};
-$("kd").onkeydown=$("wk").onkeydown=function(e){if(e.key==="Enter")$("go").onclick()};
+$("adm").onclick=function(e){e.preventDefault();var k=prompt("Masukkan kode admin:");if(k){code=k.trim();try{localStorage.setItem("pip_kode",code)}catch(x){}last="";load()}};
 $("tabs").addEventListener("click",function(e){var b=e.target.closest("[data-t]");if(b){tab=b.getAttribute("data-t");render()}});
 $("q").oninput=list;
 $("list").addEventListener("change",function(e){var r=e.target.closest("[data-id]");if(!r||e.target.tagName!=="SELECT")return;
@@ -169,7 +167,7 @@ $("exp").onclick=function(){
   var q=function(s){return '"'+String(s||"").replace(/"/g,'""')+'"'};
   var csv="\ufeffNo,Nama,Desil,Kelas,Jurusan,Finansial,PIP,Validasi,Divalidasi oleh,Waktu\n"+data.map(function(d,i){return [i+1,q(d.nama),d.desil,d.kelas,d.jur,d.fin,d.valid&&prio(d.fin)?"Layak":"-",d.valid?"Sudah":"Belum",q(d.validBy),d.validAt].join(",")}).join("\n");
   var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="validasi-pip-siswa.csv";document.body.appendChild(a);a.click();a.remove()};
-load();setInterval(function(){if(!document.hidden&&code)load()},30000);
+load();setInterval(function(){if(!document.hidden)load()},30000);
 </script>
 </body>
 </html>
