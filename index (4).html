@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Validasi Data PIP</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f1f3f9;--card:#fff;--tx:#14162b;--mut:#6a6f87;--bd:#e0e4ef;--hd1:#2b2a7a;--hd2:#4338ca;--ac:#4338ca;--acTx:#fff;--in:#f6f7fc;
+--f1:#22a06b;--f2:#e2b023;--f3:#ee7b2d;--f4:#d6362d;--f0:#b3b8cb;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0e1a;--card:#171829;--tx:#eceefa;--mut:#9094ad;--bd:#2a2c44;--hd1:#171650;--hd2:#2e2a9c;--ac:#8b86ff;--acTx:#0d0c2e;--in:#101120;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d0e1a;--card:#171829;--tx:#eceefa;--mut:#9094ad;--bd:#2a2c44;--hd1:#171650;--hd2:#2e2a9c;--ac:#8b86ff;--acTx:#0d0c2e;--in:#101120;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font:15px/1.5 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.hero{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:22px 16px 56px}
+.w{max-width:720px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.brand{font-weight:800;font-size:17px}
+.ex{background:rgba(255,255,255,.14);border:0;color:#fff;padding:7px 12px;border-radius:99px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.prog{display:flex;align-items:center;gap:20px;margin-top:20px}
+.ring{position:relative;width:104px;height:104px;flex:none}
+.ring svg{width:104px;height:104px;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:24px;font-weight:800}
+.pt{font-size:17px;font-weight:600;line-height:1.3}
+.ps{font-size:13px;opacity:.8;margin-top:6px}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;opacity:.85;margin-top:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:#8a8fb5}.dot.on{background:#43e0a0;box-shadow:0 0 0 4px rgba(67,224,160,.25)}
+main{max-width:720px;margin:-34px auto 0;padding:0 16px 40px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;margin-bottom:12px}
+.in1{display:flex;gap:8px;flex-wrap:wrap}
+input,select{padding:11px 12px;border:1px solid var(--bd);border-radius:12px;background:var(--in);color:var(--tx);font:inherit;font-size:14px;min-width:0;width:100%}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+label{font-size:12px;font-weight:600;color:var(--mut);display:block;margin:0 0 6px}
+.tabs{display:flex;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:4px;margin-bottom:12px}
+.tabs button{flex:1;border:0;background:none;color:var(--mut);font:inherit;font-weight:600;font-size:14px;padding:9px 6px;border-radius:10px;cursor:pointer}
+.tabs button.sel{background:var(--ac);color:var(--acTx)}
+.head{display:flex;gap:12px;align-items:center}
+.av{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px;background:var(--f0)}
+.nm{font-weight:700;line-height:1.25}.ds{font-size:12px;color:var(--mut)}
+.fld{margin-top:14px}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pl{flex:1 1 0;min-width:56px;padding:9px 6px;border-radius:11px;border:1.5px solid var(--bd);background:var(--in);color:var(--tx);font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:center}
+.pl.on{color:#fff;border-color:transparent;background:var(--ac)}
+.pl.on[data-c="1"]{background:var(--f1)}.pl.on[data-c="2"]{background:var(--f2);color:#1c1500}.pl.on[data-c="3"]{background:var(--f3)}.pl.on[data-c="4"]{background:var(--f4)}
+.save{width:100%;margin-top:14px;padding:12px;border:0;border-radius:12px;background:var(--ac);color:var(--acTx);font:inherit;font-weight:800;font-size:15px;cursor:pointer}
+.save.ghost{background:var(--in);color:var(--tx);border:1px solid var(--bd);font-weight:600}
+.ok{display:inline-block;margin-top:2px;font-size:12px;font-weight:700;color:var(--f1)}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;color:#fff}
+.vrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px;font-size:14px}
+.lay{color:var(--f4);font-weight:800;font-size:12px}
+.msg{padding:34px 10px;text-align:center;color:var(--mut)}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:11px 18px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="w">
+ <div class="top"><div class="brand">Validasi Data PIP</div><button class="ex" id="exp">Ekspor CSV</button></div>
+ <div class="prog">
+  <div class="ring"><svg viewBox="0 0 104 104"><circle cx="52" cy="52" r="44" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="10"/><circle id="arc" cx="52" cy="52" r="44" fill="none" stroke="#43e0a0" stroke-width="10" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="276.5" style="transition:stroke-dashoffset .6s"/></svg><b id="pct">0%</b></div>
+  <div><div class="pt" id="pt">Memuat data</div><div class="ps" id="ps"></div><div class="live"><i class="dot" id="dot"></i><span id="st">Menghubungkan</span></div></div>
+ </div>
+</div></header>
+<main>
+ <div class="card"><div class="in1">
+  <div style="flex:1 1 140px"><label for="kd">Kode akses</label><input id="kd" type="password" placeholder="Dari admin" autocomplete="off"></div>
+  <div style="flex:1 1 140px"><label for="wk">Nama wali kelas</label><input id="wk" placeholder="Isi nama Anda" autocomplete="name"></div>
+  <div style="flex:1 1 140px"><label for="q">Cari siswa</label><input id="q" placeholder="Ketik nama"></div>
+  <button class="save" id="go" style="width:auto;margin:0;align-self:flex-end;padding:11px 18px">Masuk</button>
+ </div></div>
+ <div class="tabs" id="tabs"></div>
+ <div id="list"><div class="msg">Memuat data</div></div>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+// Tempel alamat Web App dari Google Apps Script di bawah ini
+var API="https://script.google.com/macros/s/AKfycbxDQIC_W295dak03-GXON1P2gcyQqzR6T9k5-VG0L8CkZEDxvlGJ3aH6Ccnm37c3AMQ/exec";
+var JUR=["TP","TPM","DGM","TKP","TOI A","TOI B","TITL A","TITL B","TSM","TELIN","DPIB"];
+var KLS=["10","11","12"], FIN=["Mampu","Menengah","Miskin","Miskin Ekstrem"];
+var COL=["","var(--f1)","var(--f2)","var(--f3)","var(--f4)"];
+var $=function(i){return document.getElementById(i)};
+var data=[],drafts={},editing={},errs={},tab="belum",who="",code="",admin=false,last="";
+try{who=localStorage.getItem("pip_wali")||"";code=localStorage.getItem("pip_kode")||""}catch(e){}
+$("wk").value=who;$("kd").value=code;
+function norm(s){return String(s||"").trim().toLowerCase().replace(/\s+/g," ")}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function prio(f){return f==="Miskin"||f==="Miskin Ekstrem"}
+function fc(f){return COL[FIN.indexOf(f)+1]||"var(--f0)"}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("on")},3000)}
+function cur(d){var x=drafts[d.id]||{};return{kelas:x.kelas!=null?x.kelas:d.kelas,jur:x.jur!=null?x.jur:d.jur,fin:x.fin!=null?x.fin:d.fin}}
+function dirty(d){var c=cur(d);return c.kelas!==d.kelas||c.jur!==d.jur||c.fin!==d.fin}
+function locked(d){return d.valid&&!admin&&norm(d.validBy)!==norm(who)}
+function fdate(t){try{return new Date(t).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}catch(e){return ""}}
+function ini(n){return String(n).trim().split(/\s+/).slice(0,2).map(function(w){return w[0]}).join("").toUpperCase()}
+function setSt(on,t){$("dot").classList.toggle("on",on);$("st").textContent=t}
+function head(){
+  var n=data.length,v=data.filter(function(d){return d.valid}).length,lay=data.filter(function(d){return d.valid&&prio(d.fin)}).length;
+  $("pct").textContent=(n?Math.round(v/n*100):0)+"%";$("arc").style.strokeDashoffset=276.5*(1-(n?v/n:0));
+  $("pt").textContent=n?v+" dari "+n+" siswa sudah divalidasi":"Belum ada data";
+  $("ps").textContent=n?lay+" siswa layak PIP, "+(n-v)+" masih menunggu validasi":"Masukkan kode akses lalu klik Masuk";
+  $("tabs").innerHTML=[["belum","Perlu divalidasi ("+(n-v)+")"],["sudah","Tervalidasi ("+v+")"]].map(function(t){return '<button class="'+(tab===t[0]?"sel":"")+'" data-t="'+t[0]+'">'+t[1]+'</button>'}).join("");
+}
+function edit(d){
+  var c=cur(d),dt=dirty(d);
+  var kp=KLS.map(function(k){return '<button class="pl'+(c.kelas===k?" on":"")+'" data-f="kelas" data-v="'+k+'">'+k+'</button>'}).join("");
+  var fp=FIN.map(function(f,i){return '<button class="pl'+(c.fin===f?" on":"")+'" data-f="fin" data-v="'+f+'" data-c="'+(i+1)+'">'+f+'</button>'}).join("");
+  var js='<option value="">Pilih jurusan</option>'+JUR.map(function(j){return '<option'+(j===c.jur?" selected":"")+'>'+j+'</option>'}).join("");
+  var btn=(d.valid&&!dt)?'<button class="save ghost" data-cancel="1">Batal</button>':'<button class="save" data-save="1">Simpan</button>';
+  return '<div class="card" data-id="'+d.id+'"><div class="head"><span class="av" style="background:'+(c.fin?fc(c.fin):"var(--f0)")+'">'+esc(ini(d.nama))+'</span><div><div class="nm">'+esc(d.nama)+'</div><div class="ds">Desil '+esc(d.desil||"-")+'</div></div></div>'
+   +'<div class="fld"><label>Kelas</label><div class="pills">'+kp+'</div></div>'
+   +'<div class="fld"><label>Jurusan</label><select data-f="jur">'+js+'</select></div>'
+   +'<div class="fld"><label>Kondisi finansial</label><div class="pills">'+fp+'</div></div>'+btn
+   +(errs[d.id]?'<div class="ds" style="margin-top:8px;color:var(--f4);font-weight:600">'+esc(errs[d.id])+'</div>':'')+'</div>';
+}
+function ro(d){
+  return '<div class="card" data-id="'+d.id+'"><div class="head"><span class="av" style="background:'+fc(d.fin)+'">'+esc(ini(d.nama))+'</span><div><div class="nm">'+esc(d.nama)+'</div><div class="ok">Divalidasi oleh '+esc(d.validBy||"-")+', '+fdate(d.validAt)+'</div></div></div>'
+   +'<div class="vrow"><b>Kelas '+esc(d.kelas)+'</b><b>'+esc(d.jur)+'</b><span class="tag" style="background:'+fc(d.fin)+(d.fin==="Menengah"?";color:#1c1500":"")+'">'+esc(d.fin)+'</span>'+(prio(d.fin)?'<span class="lay">Layak PIP</span>':'')+'</div>'
+   +(locked(d)?'<div class="ds" style="margin-top:12px">Terkunci: sudah divalidasi oleh '+esc(d.validBy||"-")+'</div>':'<button class="save ghost" data-edit="1" style="margin-top:12px;padding:9px">Ubah</button>')+'</div>';
+}
+function list(){
+  var q=$("q").value.toLowerCase();
+  var rows=data.filter(function(d){return ((tab==="sudah")===d.valid)&&(!q||d.nama.toLowerCase().indexOf(q)>-1)});
+  if(!data.length){$("list").innerHTML='<div class="msg">Masukkan kode akses lalu klik Masuk.</div>';return}
+  if(!rows.length){$("list").innerHTML='<div class="msg">'+(tab==="belum"&&!q?"Semua siswa sudah divalidasi.":"Tidak ada siswa di sini.")+'</div>';return}
+  $("list").innerHTML=rows.map(function(d){return (tab==="sudah"&&!editing[d.id])?ro(d):edit(d)}).join("");
+}
+function render(){head();list()}
+function byId(id){return data.filter(function(d){return d.id===id})[0]}
+function get(){return fetch(API+"?key="+encodeURIComponent(code)).then(function(r){return r.json()})}
+function post(b){b.key=code;return fetch(API,{method:"POST",body:JSON.stringify(b)}).then(function(r){return r.json()})}
+function load(){
+  if(!code){setSt(false,"Belum masuk");render();return}
+  if(API.indexOf("PASTE_")===0){setSt(false,"Alamat sistem belum diisi di index.html");return}
+  get().then(function(j){
+    if(!j.ok){setSt(false,j.error==="kode"?"Kode akses salah":"Gagal memuat");if(j.error==="kode"){data=[];last="";render()}return}
+    admin=!!j.admin;setSt(true,admin?"Tersambung, mode admin":"Tersambung");
+    var s=JSON.stringify(j.rows);if(s===last)return;last=s;data=j.rows;render()
+  }).catch(function(){setSt(false,"Tidak bisa terhubung, coba lagi")});
+}
+$("go").onclick=function(){code=$("kd").value.trim();who=$("wk").value.trim();try{localStorage.setItem("pip_kode",code);localStorage.setItem("pip_wali",who)}catch(e){}last="";load()};
+$("wk").onchange=function(){who=$("wk").value.trim();try{localStorage.setItem("pip_wali",who)}catch(e){}list()};
+$("kd").onkeydown=$("wk").onkeydown=function(e){if(e.key==="Enter")$("go").onclick()};
+$("tabs").addEventListener("click",function(e){var b=e.target.closest("[data-t]");if(b){tab=b.getAttribute("data-t");render()}});
+$("q").oninput=list;
+$("list").addEventListener("change",function(e){var r=e.target.closest("[data-id]");if(!r||e.target.tagName!=="SELECT")return;
+  var id=r.getAttribute("data-id");drafts[id]=drafts[id]||{};drafts[id].jur=e.target.value;list()});
+$("list").addEventListener("click",function(e){
+  var r=e.target.closest("[data-id]");if(!r)return;var id=r.getAttribute("data-id"),t=e.target;
+  var pl=t.closest(".pl");
+  if(pl){drafts[id]=drafts[id]||{};drafts[id][pl.getAttribute("data-f")]=pl.getAttribute("data-v");list();return}
+  if(t.getAttribute("data-edit")){editing[id]=true;list();return}
+  if(t.getAttribute("data-cancel")){delete editing[id];delete drafts[id];list();return}
+  if(!t.getAttribute("data-save"))return;
+  var d=byId(id),c=cur(d);
+  who=$("wk").value.trim();
+  if(!who){toast("Isi nama wali kelas terlebih dahulu.");$("wk").focus();window.scrollTo({top:0,behavior:"smooth"});return}
+  if(!c.kelas||!c.jur||!c.fin){toast("Lengkapi kelas, jurusan, dan finansial.");return}
+  t.disabled=true;t.textContent="Menyimpan...";delete errs[id];
+  post({action:"save",id:id,kelas:c.kelas,jur:c.jur,fin:c.fin,validBy:who}).then(function(j){
+    if(j.ok){delete drafts[id];delete editing[id];Object.assign(d,{kelas:c.kelas,jur:c.jur,fin:c.fin,valid:true,validBy:who,validAt:j.validAt});last="";toast("Tersimpan: "+d.nama);render();return}
+    errs[id]=j.error==="locked"?"Sudah divalidasi oleh "+(j.validBy||"wali kelas lain")+" dan terkunci.":j.error==="kode"?"Kode akses salah.":"Gagal menyimpan ("+j.error+")";
+    if(j.error==="locked"){delete drafts[id];delete editing[id];load()}
+    toast(errs[id]);list()
+  }).catch(function(){errs[id]="Tidak bisa terhubung ke sistem. Coba lagi.";toast(errs[id]);list()})});
+$("exp").onclick=function(){
+  if(!data.length){toast("Belum ada data.");return}
+  var q=function(s){return '"'+String(s||"").replace(/"/g,'""')+'"'};
+  var csv="\ufeffNo,Nama,Desil,Kelas,Jurusan,Finansial,PIP,Validasi,Divalidasi oleh,Waktu\n"+data.map(function(d,i){return [i+1,q(d.nama),d.desil,d.kelas,d.jur,d.fin,d.valid&&prio(d.fin)?"Layak":"-",d.valid?"Sudah":"Belum",q(d.validBy),d.validAt].join(",")}).join("\n");
+  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="validasi-pip-siswa.csv";document.body.appendChild(a);a.click();a.remove()};
+load();setInterval(function(){if(!document.hidden&&code)load()},30000);
+</script>
+</body>
+</html>
